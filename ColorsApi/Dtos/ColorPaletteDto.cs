@@ -1,6 +1,6 @@
 namespace ColorsApi.Dtos;
 
-public record ColorPaletteDto(List<ColorDto> Colors)
+internal record ColorPaletteDto(List<ColorDto> Colors)
 {
     public static ColorPaletteDto RandomPalette()
     {

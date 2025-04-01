@@ -2,7 +2,7 @@ using System.Drawing;
 
 namespace ColorsApi.Dtos;
 
-public record ColorDto(ColorType Type, int Red, int Green, int Blue)
+internal record ColorDto(ColorType Type, int Red, int Green, int Blue)
 {
     public static ColorDto FromColor(ColorType type, Color color)
     {
@@ -10,7 +10,7 @@ public record ColorDto(ColorType Type, int Red, int Green, int Blue)
     }
 }
 
-public enum ColorType
+internal enum ColorType
 {
     Primary,
     Secondary,

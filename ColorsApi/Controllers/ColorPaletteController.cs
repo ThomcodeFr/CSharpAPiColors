@@ -6,7 +6,7 @@ namespace ColorsApi.Controllers;
 
 [ApiController] 
 [Route("[controller]")]
-public class ColorPaletteController : ControllerBase
+internal class ColorPaletteController : ControllerBase
 {
     [HttpGet]
     public IActionResult GetColors()
