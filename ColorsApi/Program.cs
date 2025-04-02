@@ -7,9 +7,6 @@ public static class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
-        // Add services to the container.
-        builder.Services.AddAuthorization();
         
         builder.Services.AddControllers();
 
@@ -27,8 +24,6 @@ public static class Program
         }
 
         app.UseHttpsRedirection();
-        
-        app.UseAuthorization();
         
         app.MapControllers();
         

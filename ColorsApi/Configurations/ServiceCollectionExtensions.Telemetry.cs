@@ -5,7 +5,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
 namespace ColorsApi.Configurations;
-public static partial class ServiceCollectionExtensions
+internal static partial class ServiceCollectionExtensions
 {
     public static WebApplicationBuilder ConfigureTelemetry(this WebApplicationBuilder builder)
     {
