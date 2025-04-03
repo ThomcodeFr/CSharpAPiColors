@@ -1,20 +1,12 @@
 using System.Drawing;
+using Enum = ColorsApi.Helpers.Enum;
 
 namespace ColorsApi.Dtos;
 
-internal record ColorDto(ColorType Type, int Red, int Green, int Blue)
+internal record ColorDto(Enum.ColorType Type, int Red, int Green, int Blue)
 {
-    public static ColorDto FromColor(ColorType type, Color color)
+    public static ColorDto FromColor(Enum.ColorType type, Color color)
     {
         return new ColorDto(type, color.R, color.G, color.B);
     }
-}
-
-internal enum ColorType
-{
-    Primary,
-    Secondary,
-    Tertiary,
-    Accent,
-    Neutral
 }

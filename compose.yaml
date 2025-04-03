@@ -40,3 +40,8 @@
     container_name: ollama
     tty: true
     restart: unless-stopped
+  colorsapi-1:
+    image: colorsapi-1
+    build:
+      context: .
+      dockerfile: ColorsApi/Dockerfile

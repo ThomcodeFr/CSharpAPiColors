@@ -1,3 +1,5 @@
+using Enum = ColorsApi.Helpers.Enum;
+
 namespace ColorsApi.Dtos;
 
 internal record ColorPaletteDto(List<ColorDto> Colors)
@@ -7,11 +9,11 @@ internal record ColorPaletteDto(List<ColorDto> Colors)
         var random = new Random();
         var colors = new List<ColorDto>
         {
-            new ColorDto(ColorType.Primary, random.Next(256), random.Next(256), random.Next(256)),
-            new ColorDto(ColorType.Secondary, random.Next(256), random.Next(256), random.Next(256)),
-            new ColorDto(ColorType.Tertiary, random.Next(256), random.Next(256), random.Next(256)),
-            new ColorDto(ColorType.Accent, random.Next(256), random.Next(256), random.Next(256)),
-            new ColorDto(ColorType.Neutral, random.Next(256), random.Next(256), random.Next(256))
+            new ColorDto(Enum.ColorType.Primary, random.Next(256), random.Next(256), random.Next(256)),
+            new ColorDto(Enum.ColorType.Secondary, random.Next(256), random.Next(256), random.Next(256)),
+            new ColorDto(Enum.ColorType.Tertiary, random.Next(256), random.Next(256), random.Next(256)),
+            new ColorDto(Enum.ColorType.Accent, random.Next(256), random.Next(256), random.Next(256)),
+            new ColorDto(Enum.ColorType.Neutral, random.Next(256), random.Next(256), random.Next(256))
         };
         return new ColorPaletteDto(colors);
     }

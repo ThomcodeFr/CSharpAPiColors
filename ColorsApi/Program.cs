@@ -1,4 +1,6 @@
 using ColorsApi.Configurations;
+using ColorsApi.DataBase;
+using Microsoft.EntityFrameworkCore;
 
 namespace ColorsApi;
 
@@ -14,7 +16,10 @@ public static class Program
         builder.Services.AddOpenApi();
 
         builder.ConfigureTelemetry();
-
+        
+        builder.Services.AddDbContext<ColorsDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("ColorsDb")));
+        
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
