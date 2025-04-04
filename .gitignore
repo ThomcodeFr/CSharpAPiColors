@@ -33,3 +33,6 @@ riderModule.iml
 
 # Coverage
 coverage/
+
+# AppSettings
+/appsettings.json

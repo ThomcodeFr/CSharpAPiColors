@@ -2,7 +2,7 @@ using Enum = ColorsApi.Helpers.Enum;
 
 namespace ColorsApi.Dtos;
 
-internal record ColorPaletteDto(List<ColorDto> Colors)
+public record ColorPaletteDto(List<ColorDto> Colors)
 {
     public static ColorPaletteDto RandomPalette()
     {

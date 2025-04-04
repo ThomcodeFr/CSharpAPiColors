@@ -12,6 +12,6 @@ public class Color
     public int Blue { get; set; }
     
     public int ColorPaletteId { get; set; }
-    public required ColorPalette ColorPalette { get; set; }
+    public ColorPalette? ColorPalette { get; set; }
     
 }
