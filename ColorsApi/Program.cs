@@ -1,6 +1,8 @@
 using ColorsApi.Configurations;
 using ColorsApi.DataBase;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ColorsApi;
 
@@ -11,14 +13,24 @@ public static class Program
         var builder = WebApplication.CreateBuilder(args);
         
         builder.Services.AddControllers();
+        builder.Services.AddOpenApi(); // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        builder.Services.AddOpenApi();
+        builder.Services.AddDbContext<ColorsDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("ColorsDb"))); 
+        
+        // Création d'un utilisateur (configuration)
+        builder.Services
+            .AddIdentity<IdentityUser, IdentityRole>()
+            .AddEntityFrameworkStores<AppIdentityDbContext>();
+
+        builder.Services.AddDbContext<AppIdentityDbContext>(options =>
+            options
+                .UseNpgsql(
+                    // Même base mais schéma différent
+                    builder.Configuration.GetConnectionString("ColorsDb"),
+                    npgsqlOptions => npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName)));
 
         builder.ConfigureTelemetry();
-        
-        builder.Services.AddDbContext<ColorsDbContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("ColorsDb")));
         
         var app = builder.Build();
 
@@ -29,7 +41,8 @@ public static class Program
         }
 
         app.UseHttpsRedirection();
-        
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.MapControllers();
         
         app.Run();

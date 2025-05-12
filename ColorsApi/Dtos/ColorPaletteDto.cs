@@ -9,11 +9,11 @@ public record ColorPaletteDto(List<ColorDto> Colors)
         var random = new Random();
         var colors = new List<ColorDto>
         {
-            new ColorDto(Enum.ColorType.Primary, random.Next(256), random.Next(256), random.Next(256)),
-            new ColorDto(Enum.ColorType.Secondary, random.Next(256), random.Next(256), random.Next(256)),
-            new ColorDto(Enum.ColorType.Tertiary, random.Next(256), random.Next(256), random.Next(256)),
-            new ColorDto(Enum.ColorType.Accent, random.Next(256), random.Next(256), random.Next(256)),
-            new ColorDto(Enum.ColorType.Neutral, random.Next(256), random.Next(256), random.Next(256))
+            new ColorDto(0, Enum.ColorType.Primary, random.Next(256), random.Next(256), random.Next(256)),
+            new ColorDto(0, Enum.ColorType.Secondary, random.Next(256), random.Next(256), random.Next(256)),
+            new ColorDto(0, Enum.ColorType.Tertiary, random.Next(256), random.Next(256), random.Next(256)),
+            new ColorDto(0, Enum.ColorType.Accent, random.Next(256), random.Next(256), random.Next(256)),
+            new ColorDto(0, Enum.ColorType.Neutral, random.Next(256), random.Next(256), random.Next(256))
         };
         return new ColorPaletteDto(colors);
     }

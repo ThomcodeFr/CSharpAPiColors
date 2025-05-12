@@ -1,12 +1,12 @@
-using System.Drawing;
+using ColorsApi.Entities;
 using Enum = ColorsApi.Helpers.Enum;
 
 namespace ColorsApi.Dtos;
 
-public record ColorDto(Enum.ColorType Type, int Red, int Green, int Blue)
+public record ColorDto(int Id, Enum.ColorType Type, int Red, int Green, int Blue)
 {
-    public static ColorDto FromColor(Enum.ColorType type, Color color)
+    public static ColorDto FromColor(Color color)
     {
-        return new ColorDto(type, color.R, color.G, color.B);
+        return new ColorDto(color.Id, color.Type, color.Red, color.Green, color.Blue);
     }
 }

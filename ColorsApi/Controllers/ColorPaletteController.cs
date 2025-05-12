@@ -1,35 +1,35 @@
 using Microsoft.AspNetCore.Mvc;
 using ColorsApi.Dtos;
-using ColorsApi.DataBase;
+using ColorsApi.DataBase; 
 using ColorsApi.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ColorsApi.Controllers;
 
-[ApiController] 
-[Route("[controller]")]
+[ApiController]
+[Route("[controller]")] // Route de base : /ColorPalette
 public class ColorPaletteController : ControllerBase
 {
-    public readonly ColorsDbContext _context;
+    private readonly ColorsDbContext _context;
 
     public ColorPaletteController(ColorsDbContext context)
     {
         _context = context;
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> GetColors()
     {
         var colorPalettes = await _context.ColorPalettes
             .Where(cp => !cp.IsArchived)
-            .Include(cp => cp.Colors)
+            .Include(cp => cp.Colors.Where(c => !c.IsArchived))
             .ToListAsync();
 
         var colorPaletteDtos = colorPalettes.Select(cp => new ColorPaletteDto(
-            cp.Colors.Select(c => new ColorDto(c.Type, c.Red, c.Green, c.Blue)).ToList()
+            cp.Colors.Select(c => ColorDto.FromColor(c)).ToList()
         )).ToList();
 
-        return Ok(new { Items = colorPaletteDtos });    
+        return Ok(new { Items = colorPaletteDtos });
     }
 
     [HttpPost]
@@ -50,31 +50,34 @@ public class ColorPaletteController : ControllerBase
                 Blue = c.Blue
             }).ToList()
         };
-        
+
         _context.ColorPalettes.Add(colorPalette);
         await _context.SaveChangesAsync();
 
+        // Utilise FromColor pour inclure les Id dans la réponse
         var createdDto = new ColorPaletteDto(
-            colorPalette.Colors.Select(c => new ColorDto(c.Type, c.Red, c.Green, c.Blue)).ToList()
+            colorPalette.Colors.Select(c => ColorDto.FromColor(c)).ToList()
         );
-        
-        return CreatedAtAction(nameof(GetColors), new { id = colorPalette.Id }, new { Items = new [] { createdDto } });
+
+        return CreatedAtAction(nameof(GetColors), new { id = colorPalette.Id }, new { Items = new[] { createdDto } });
     }
-    
-    // Soft delete
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteColorPalette(int id)
+
+    [HttpDelete("colors/{id}")]
+    public async Task<IActionResult> DeleteColor(int id)
     {
-        var palette = await _context.ColorPalettes.FirstOrDefaultAsync(p => p.Id == id);
-        if (palette == null)
+        var color = await _context.Colors
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+        if (color == null)
         {
+            Console.WriteLine($"Color with ID {id} not found"); // Log pour débogage
             return NotFound();
         }
-        
-        palette.IsArchived = true;
-        palette.UpdatedAt = DateTimeOffset.UtcNow;
+
+        color.IsArchived = true;
+        color.UpdatedAt = DateTimeOffset.UtcNow;
 
         await _context.SaveChangesAsync();
-        return NoContent();        
+        return NoContent();
     }
 }
