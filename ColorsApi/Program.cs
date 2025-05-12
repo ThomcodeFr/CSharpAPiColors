@@ -28,7 +28,7 @@ public static class Program
                 .UseNpgsql(
                     // Même base mais schéma différent
                     builder.Configuration.GetConnectionString("ColorsDb"),
-                    npgsqlOptions => npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName)));
+                    npgsqlOptions => npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, DbConstants.AuthSchema)));
 
         builder.ConfigureTelemetry();
         
