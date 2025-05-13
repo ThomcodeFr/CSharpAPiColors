@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using ColorsApi.Dtos;
 using ColorsApi.DataBase; 
@@ -7,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ColorsApi.Controllers;
 
 [ApiController]
-[Route("[controller]")] // Route de base : /ColorPalette
+[Route("[controller]")]
 public class ColorPaletteController : ControllerBase
 {
     private readonly ColorsDbContext _context;
@@ -39,11 +40,19 @@ public class ColorPaletteController : ControllerBase
         {
             return BadRequest("La palette doit contenir au minimum une couleur");
         }
-
+        
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized("Utilisateur non authentifié");
+        }
+        
         var colorPalette = new ColorPalette
         {
+            ColorUserEntityId = userId,
             Colors = colorPaletteDto.Colors.Select(c => new Color
             {
+                ColorPaletteId = Guid.NewGuid().ToString(),
                 Type = c.Type,
                 Red = c.Red,
                 Green = c.Green,
@@ -53,8 +62,13 @@ public class ColorPaletteController : ControllerBase
 
         _context.ColorPalettes.Add(colorPalette);
         await _context.SaveChangesAsync();
+        
+        foreach (var color in colorPalette.Colors)
+        {
+            color.ColorPaletteId = colorPalette.Id;
+        }
+        await _context.SaveChangesAsync();
 
-        // Utilise FromColor pour inclure les Id dans la réponse
         var createdDto = new ColorPaletteDto(
             colorPalette.Colors.Select(c => ColorDto.FromColor(c)).ToList()
         );
@@ -63,14 +77,14 @@ public class ColorPaletteController : ControllerBase
     }
 
     [HttpDelete("colors/{id}")]
-    public async Task<IActionResult> DeleteColor(int id)
+    public async Task<IActionResult> DeleteColor(string id)
     {
         var color = await _context.Colors
             .FirstOrDefaultAsync(c => c.Id == id);
 
         if (color == null)
         {
-            Console.WriteLine($"Color with ID {id} not found"); // Log pour débogage
+            Console.WriteLine($"Color with ID {id} not found");
             return NotFound();
         }
 
@@ -79,5 +93,4 @@ public class ColorPaletteController : ControllerBase
 
         await _context.SaveChangesAsync();
         return NoContent();
-    }
-}
+    }}

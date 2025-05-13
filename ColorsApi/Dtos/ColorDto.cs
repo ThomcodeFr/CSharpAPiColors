@@ -1,12 +1,24 @@
 using ColorsApi.Entities;
-using Enum = ColorsApi.Helpers.Enum;
 
 namespace ColorsApi.Dtos;
 
-public record ColorDto(int Id, Enum.ColorType Type, int Red, int Green, int Blue)
+public class ColorDto
 {
+    public required string Id { get; set; }
+    public required string Type { get; set; }
+    public int Red { get; set; }
+    public int Green { get; set; }
+    public int Blue { get; set; }
+
     public static ColorDto FromColor(Color color)
     {
-        return new ColorDto(color.Id, color.Type, color.Red, color.Green, color.Blue);
+        return new ColorDto
+        {
+            Id = color.Id,
+            Type = color.Type,
+            Red = color.Red,
+            Green = color.Green,
+            Blue = color.Blue
+        };
     }
 }
