@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 namespace ColorsApi.DataBase;
 
 /// <summary>
-/// Gère les tables d'Identity (AspNetUsers, etc.) dans le schéma auth.
+/// Gère les tables d'Identity (AspNetUsers, etc.) dans le schéma auth via l'héritage IdentityDbContext
 /// </summary>
 public class AppIdentityDbContext : IdentityDbContext<IdentityUser>
 {

@@ -1,8 +1,12 @@
+using System.Text;
 using ColorsApi.Configurations;
 using ColorsApi.DataBase;
+using ColorsApi.Dtos;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ColorsApi;
 
@@ -29,6 +33,30 @@ public static class Program
                     // Même base mais schéma différent
                     builder.Configuration.GetConnectionString("ColorsDb"),
                     npgsqlOptions => npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, DbConstants.AuthSchema)));
+        
+        builder.Services.Configure<JwtAuthOptions>(builder.Configuration.GetSection("Jwt"));
+        
+        var jwtAuthOptions = builder.Configuration.GetSection("Jwt").Get<JwtAuthOptions>();
+        
+        if (jwtAuthOptions is null)
+        {
+            throw new InvalidOperationException("Les options JWT sont manquantes ou mal configurées dans appsettings.json.");
+        }
+        
+        builder.Services
+            .AddAuthentication(options => {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options => {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = jwtAuthOptions.Issuer,
+                    ValidAudience = jwtAuthOptions.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAuthOptions.Key))
+                };
+            });
+        builder.Services.AddAuthorization();
 
         builder.ConfigureTelemetry();
         
