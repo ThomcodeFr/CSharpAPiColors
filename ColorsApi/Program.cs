@@ -10,8 +10,13 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace ColorsApi;
 
-public static class Program
+public class Program
 {
+
+    protected Program()
+    {
+        
+    }
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);

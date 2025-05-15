@@ -10,6 +10,10 @@ public class ColorPaletteDto
 {
     public List<ColorDto> Colors { get; set; }
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="colors"></param>
     public ColorPaletteDto(List<ColorDto> colors)
     {
         Colors = colors;

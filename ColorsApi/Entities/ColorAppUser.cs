@@ -6,6 +6,6 @@ public class ColorAppUser
     public bool IsArchived { get; set; } = false;
     public DateTimeOffset? UpdatedAt { get; set; }
     public List<ColorPalette> ColorPalettes { get; set; } = new();
-    public required string IdentityUserId { get; set; } // Clé étrangère 
+    public required string IdentityUserId { get; set; }
     public Microsoft.AspNetCore.Identity.IdentityUser? IdentityUser { get; set; }
 }

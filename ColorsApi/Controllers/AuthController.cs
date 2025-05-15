@@ -8,27 +8,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Authorization;
 
 namespace ColorsApi.Controllers;
 
 [ApiController]
 [Route("auth")]
-public class AuthController : ControllerBase
+public class AuthController(
+    UserManager<IdentityUser> userManager,
+    ColorsDbContext colorsDbContext,
+    IOptions<JwtAuthOptions> jwtOptions)
+    : ControllerBase
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly ColorsDbContext _colorsDbContext;
-    private readonly JwtAuthOptions _jwtOptions;
-
-    public AuthController(
-        UserManager<IdentityUser> userManager,
-        ColorsDbContext colorsDbContext,
-        IOptions<JwtAuthOptions> jwtOptions)
-    {
-        _userManager = userManager;
-        _colorsDbContext = colorsDbContext;
-        _jwtOptions = jwtOptions.Value;
-    }
+    private readonly JwtAuthOptions _jwtOptions = jwtOptions.Value;
 
     [HttpPost("access-token")]
     public async Task<ActionResult<AccessTokensDto>> RegisterUser(RegisterUserDto registerUserDto)
@@ -39,7 +30,7 @@ public class AuthController : ControllerBase
             Email = registerUserDto.Email
         };
         
-        IdentityResult createUserResult = await _userManager.CreateAsync(identityUser, registerUserDto.Password);
+        IdentityResult createUserResult = await userManager.CreateAsync(identityUser, registerUserDto.Password);
 
         if (!createUserResult.Succeeded)
         {
@@ -51,11 +42,11 @@ public class AuthController : ControllerBase
             IdentityId = identityUser.Id
         };
 
-        _colorsDbContext.Users.Add(user);
+        colorsDbContext.Users.Add(user);
         
-        await _colorsDbContext.SaveChangesAsync();
+        await colorsDbContext.SaveChangesAsync();
         
-        var accessToken = CreateToken(identityUser.Id, identityUser.Email);
+        var accessToken = CreateToken(identityUser.Id, registerUserDto.Email);
         
         return Ok(new AccessTokensDto
         {
@@ -67,8 +58,8 @@ public class AuthController : ControllerBase
     [HttpPut("access-token")]
     public async Task<ActionResult<AccessTokensDto>> LoginUser(RegisterUserDto loginUserDto)
     {
-        var identityUser = await _userManager.FindByEmailAsync(loginUserDto.Email);
-        if (identityUser == null || !await _userManager.CheckPasswordAsync(identityUser, loginUserDto.Password))
+        var identityUser = await userManager.FindByEmailAsync(loginUserDto.Email);
+        if (identityUser == null || !await userManager.CheckPasswordAsync(identityUser, loginUserDto.Password))
         {
             return Unauthorized("Email ou mot de passe invalide");
         }
