@@ -10,11 +10,9 @@ public class ColorUserEntity
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string Id { get; set; } = null!;
-
-    [ForeignKey("IdentityUser")]
-    public required string IdentityId { get; set; }
+    
     public IdentityUser? IdentityUser { get; set; }
-
+    public required string IdentityId { get; set; }
     public List<ColorPalette> ColorPalettes { get; set; } = new();
 
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;

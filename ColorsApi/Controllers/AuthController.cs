@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ColorsApi.Controllers;
 
@@ -51,6 +52,7 @@ public class AuthController : ControllerBase
         };
 
         _colorsDbContext.Users.Add(user);
+        
         await _colorsDbContext.SaveChangesAsync();
         
         var accessToken = CreateToken(identityUser.Id, identityUser.Email);

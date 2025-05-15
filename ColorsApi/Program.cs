@@ -34,6 +34,8 @@ public static class Program
                     builder.Configuration.GetConnectionString("ColorsDb"),
                     npgsqlOptions => npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, DbConstants.AuthSchema)));
         
+        
+        // Gestion de l'authentification
         builder.Services.Configure<JwtAuthOptions>(builder.Configuration.GetSection("Jwt"));
         
         var jwtAuthOptions = builder.Configuration.GetSection("Jwt").Get<JwtAuthOptions>();
@@ -43,6 +45,7 @@ public static class Program
             throw new InvalidOperationException("Les options JWT sont manquantes ou mal configurées dans appsettings.json.");
         }
         
+        // Protection des ressources
         builder.Services
             .AddAuthentication(options => {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -56,6 +59,7 @@ public static class Program
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAuthOptions.Key))
                 };
             });
+        
         builder.Services.AddAuthorization();
 
         builder.ConfigureTelemetry();

@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using ColorsApi.Dtos;
 using ColorsApi.DataBase; 
 using ColorsApi.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ColorsApi.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("[controller]")]
 public class ColorPaletteController : ControllerBase
 {
